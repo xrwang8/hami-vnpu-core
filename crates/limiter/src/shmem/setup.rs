@@ -64,6 +64,10 @@ pub fn try_open_shmem<T>(path: &str) -> Option<&'static T> {
     }
 }
 
+/// Open or atomically create the host-wide registry and map its complete layout.
+///
+/// The creator sizes the file before publishing the mapping; concurrent openers wait
+/// until that size is visible so they cannot access a partial file-backed mapping.
 pub fn open_global_registry(path: &str) -> &'static GlobalRegistry {
     if let Some(parent) = Path::new(path).parent() {
         if !parent.as_os_str().is_empty() {
